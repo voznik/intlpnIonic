@@ -207,12 +207,9 @@ angular.module('intlpnIonic', ['ionic'])
             ngModelController.$parsers.push(function(val) {
                 var offset = 0;
 
-                if( national ) {
-                } else {
-                    if( !/^\+/.test( val ) ) {
-                        val = '+'+val;
-                        offset = 1;
-                    }
+                if( !national && ( !/^\+/.test( val ))) {
+                    val = '+'+val;
+                    offset = 1;
                 }
                 var cleaned = clean(val);
 
@@ -277,11 +274,11 @@ angular.module('intlpnIonic', ['ionic'])
                         scope.countryDialCode = scope.dialCode;
                     });
                 }
-                if( modelValue )
-                    modelValue = modelValue.replace(/[^0-9]/g, "");
+                // if( modelValue )
+                //     modelValue = modelValue.replace(/[^0-9]/g, "");
                 if( scope.national ) {
-                    //return  modelValue?intlTelInputUtils.formatNumberByType(modelValue,scope.isocode,intlTelInputUtils.numberFormat.NATIONAL):'';
-                    return  modelValue?intlTelInputUtils.formatNumber('+'+modelValue):'';
+                    return  modelValue?scope.intlpnHelper.format_number(modelValue,scope.isocode,intlTelInputUtils.numberFormat.NATIONAL):'';
+                    // return  modelValue?intlTelInputUtils.formatNumber('+'+modelValue):'';
                 } else {
                     return  modelValue?intlTelInputUtils.formatNumber('+'+modelValue):'';
                 }
@@ -293,7 +290,7 @@ angular.module('intlpnIonic', ['ionic'])
                 scope.isocode = scope.intlpnHelper.getFlagFromNumber( ngModelCtrl.$viewValue );
                 scope.countryIsoCode = scope.isocode;
                 if( scope.national ) {
-                    scope.phone = intlTelInputUtils.formatNumberByType(ngModelCtrl.$viewValue,scope.isocode,intlTelInputUtils.numberFormat.NATIONAL);
+                    scope.phone = scope.intlpnHelper.format_number(ngModelCtrl.$viewValue,scope.isocode,intlTelInputUtils.numberFormat.NATIONAL);
                 } else {
                     scope.phone = ngModelCtrl.$viewValue;
                 }
@@ -302,8 +299,8 @@ angular.module('intlpnIonic', ['ionic'])
             ngModelCtrl.$parsers.push(function(viewValue) {
                 if( scope.national ) {
                     //clean everything that is not numeric or +
-                    viewValue = intlTelInputUtils.formatNumberByType(viewValue, scope.isocode, intlTelInputUtils.numberFormat.INTERNATIONAL).replace(/[^0-9]/g, "");
-                    return viewValue?'+' + viewValue:'';
+                    viewValue = scope.intlpnHelper.format_number(viewValue, scope.isocode, intlTelInputUtils.numberFormat.NATIONAL).replace(/[^0-9]/g, "");
+                    return viewValue; //?'+' + viewValue:'';
                 } else {
                     //clean everything that is not numeric or +
                     viewValue = viewValue.replace(/[^0-9]/g, "");
@@ -349,7 +346,7 @@ angular.module('intlpnIonic', ['ionic'])
             ngModelCtrl.$validators.phoneNumber = function( modelValue, viewValue ) {
                 //check if the cleaned value is correct
                 if( scope.national ) {
-                    var phone = intlTelInputUtils.formatNumberfByType(scope.phone, scope.isocode, intlTelInputUtils.numberFormat.INTERNATIONAL);
+                    var phone = scope.intlpnHelper.format_number(scope.phone, scope.isocode, intlTelInputUtils.numberFormat.NATIONAL);
                     var dial = scope.intlpnHelper.getDialCode(phone);
                     return dial === scope.dialCode && scope.isValid( modelValue, scope.isocode );
                 } else {
