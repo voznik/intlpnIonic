@@ -346,15 +346,22 @@ angular.module('intlpnIonic', ['ionic'])
                     scope.countryDialCode = scope.dialCode;
                 }
             });
-            ngModelCtrl.$validators.validForm = function( modelValue, viewValue ) {
+            ngModelCtrl.$validators.phoneNumber = function( modelValue, viewValue ) {
                 //check if the cleaned value is correct
                 if( scope.national ) {
-                    var phone = intlTelInputUtils.formatNumberByType(scope.phone, scope.isocode, intlTelInputUtils.numberFormat.INTERNATIONAL);
+                    var phone = intlTelInputUtils.formatNumberfByType(scope.phone, scope.isocode, intlTelInputUtils.numberFormat.INTERNATIONAL);
                     var dial = scope.intlpnHelper.getDialCode(phone);
                     return dial === scope.dialCode && scope.isValid( modelValue, scope.isocode );
                 } else {
                     return scope.isValid( modelValue );
                 }
+            };
+            ngModelCtrl.$validators.phoneTypeMobile = function( modelValue, viewValue ) {
+                //check if the cleaned value is correct
+                if( scope.national ) {
+                    var type = intlTelInputUtils.getNumberType(scope.phone);
+                    // is a mobile number
+                    return (type === intlTelInputUtils.numberType.MOBILE);
             };
             //manage focus/blur of the phone field
             var input = element.find('input');
