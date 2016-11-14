@@ -358,10 +358,11 @@ angular.module('intlpnIonic', ['ionic'])
             };
             ngModelCtrl.$validators.phoneTypeMobile = function( modelValue, viewValue ) {
                 //check if the cleaned value is correct
-                if( scope.national ) {
+                if( scope.isValid(modelValue)) {
                     var type = intlTelInputUtils.getNumberType(scope.phone);
                     // is a mobile number
                     return (type === intlTelInputUtils.numberType.MOBILE);
+                  }
             };
             //manage focus/blur of the phone field
             var input = element.find('input');
